@@ -1,0 +1,12 @@
+services:
+  cloudflare-ip-updater:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: cloudflare-ip-updater:latest
+    command: [
+      "-zone_identifier", "${ZONE_IDENTIFIER}",
+      "-auth_key", "${AUTH_KEY}",
+      "-filter", "${FILTER}"
+    ]
+    restart: unless-stopped
