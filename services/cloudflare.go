@@ -52,10 +52,6 @@ type CloudFlareService struct {
 
 type UpdateDNSRecordRequest struct {
 	Content string `json:"content"`
-	Name    string `json:"name"`
-	Proxied bool   `json:"proxied"`
-	Type    string `json:"type"`
-	Comment string `json:"comment"`
 }
 
 type UpdateDNSRecordResponse struct {
@@ -114,16 +110,12 @@ func (s *CloudFlareService) updateDnsRecordRequest(record DnsRecord, ip string) 
 	url := fmt.Sprintf("https://api.cloudflare.com/client/v4/zones/%s/dns_records/%s", s.zoneIdentifier, record.ID)
 	payload, err := json.Marshal(UpdateDNSRecordRequest{
 		Content: ip,
-		Name:    record.Name,
-		Proxied: true,
-		Type:    "A",
-		Comment: record.Comment,
 	})
 	fmt.Printf("updating record %s with new ip %s\n", record.Name, ip)
 	if err != nil {
 		return fmt.Errorf("failed to marshal JSON payload: %v", err)
 	}
-	req, err := http.NewRequest("PUT", url, strings.NewReader(string(payload)))
+	req, err := http.NewRequest("PATCH", url, strings.NewReader(string(payload)))
 	if err != nil {
 		return fmt.Errorf("failed to create HTTP request: %v", err)
 	}
